@@ -28,6 +28,7 @@ const AppState = {
   activeCategory: 'all',
   activeTag: null,
   searchQuery: '',
+  sortBy: 'default' // 'default' | 'price-asc' | 'price-desc'
 };
 
 // ==========================================
@@ -95,13 +96,17 @@ function addToCart(productId, quantity = 1) {
   if (existingItemIndex > -1) {
     AppState.cart[existingItemIndex].quantity += quantity;
   } else {
+    const itemImg = (product.imagen && product.imagen.trim() !== '') 
+      ? product.imagen 
+      : `./assets/images/catalogo/${product.id}.jpg`;
+
     AppState.cart.push({
       id: product.id,
       nombre: displayName,
       precio: numericPrice,
       precioOriginal: product.precio,
       categoria: product.categoria,
-      imagen: product.imagen,
+      imagen: itemImg,
       fallbackImagen: fallbackImg,
       quantity: quantity
     });
@@ -481,6 +486,25 @@ function renderProductsCatalog() {
     return true;
   });
 
+  // Ordenamiento dinámico (Menor a Mayor / Mayor a Menor)
+  if (AppState.sortBy === 'price-asc') {
+    filtered.sort((a, b) => {
+      const priceA = parsePrecio(a.precio);
+      const priceB = parsePrecio(b.precio);
+      if (priceA === 0) return 1; // Productos a cotizar al final
+      if (priceB === 0) return -1;
+      return priceA - priceB;
+    });
+  } else if (AppState.sortBy === 'price-desc') {
+    filtered.sort((a, b) => {
+      const priceA = parsePrecio(a.precio);
+      const priceB = parsePrecio(b.precio);
+      if (priceA === 0) return 1;
+      if (priceB === 0) return -1;
+      return priceB - priceA;
+    });
+  }
+
   // Contador de piezas encontradas
   if (productsCountEl) {
     productsCountEl.textContent = `${filtered.length} piezas encontradas en el catálogo`;
@@ -544,13 +568,15 @@ function renderProductsCatalog() {
     const numericPrice = parsePrecio(p.precio);
     const formattedPrice = formatearPrecio(p.precio);
 
+    const imageSrc = (p.imagen && p.imagen.trim() !== '') ? p.imagen : `./assets/images/catalogo/${p.id}.jpg`;
+
     html += `
       <div class="group bg-white rounded-2xl overflow-hidden border border-crema-claro shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col justify-between">
         
         <!-- Contenedor Imagen con Fallback Inteligente -->
         <div class="relative overflow-hidden bg-gris aspect-square">
           <img 
-            src="${p.imagen}" 
+            src="${imageSrc}" 
             alt="${displayName}" 
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             onerror="this.onerror=null; this.src='${fallbackImg}'"
@@ -652,10 +678,20 @@ function resetFilters() {
   AppState.activeCategory = 'all';
   AppState.activeTag = null;
   AppState.searchQuery = '';
+  AppState.sortBy = 'default';
+  
   const searchInput = document.getElementById('catalog-search-input');
   if (searchInput) searchInput.value = '';
 
+  const sortSelect = document.getElementById('catalog-sort-select');
+  if (sortSelect) sortSelect.value = 'default';
+
   renderFilterTabs();
+  renderProductsCatalog();
+}
+
+function handleSortChange(event) {
+  AppState.sortBy = event.target.value;
   renderProductsCatalog();
 }
 

@@ -394,15 +394,36 @@
             </p>
           </div>
 
-          <!-- Input de Búsqueda Dinámica -->
-          <div class="relative w-full lg:w-80">
-            <input 
-              type="text" 
-              id="catalog-search-input" 
-              placeholder="Buscar por nombre, tipo..." 
-              class="w-full bg-white text-negro text-xs rounded-xl pl-10 pr-4 py-3 border border-crema-claro focus:outline-none focus:border-crema-oscuro focus:ring-1 focus:ring-crema-oscuro shadow-sm placeholder:text-negro/40"
-            />
-            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-negro/40 text-xs"></i>
+          <!-- Input de Búsqueda Dinámica y Dropdown de Ordenar -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+            
+            <!-- Menú Desplegable Minimalista de Ordenamiento -->
+            <div class="relative min-w-[210px]">
+              <select 
+                id="catalog-sort-select" 
+                onchange="handleSortChange(event)"
+                class="w-full appearance-none bg-white text-negro text-xs font-semibold rounded-xl pl-9 pr-9 py-3 border border-crema-claro focus:outline-none focus:border-crema-oscuro focus:ring-1 focus:ring-crema-oscuro shadow-sm cursor-pointer hover:border-crema-oscuro/60 transition"
+                aria-label="Ordenar productos por precio"
+              >
+                <option value="default">Ordenar: Destacados</option>
+                <option value="price-asc">Precio: Menor a Mayor</option>
+                <option value="price-desc">Precio: Mayor a Menor</option>
+              </select>
+              <i class="fas fa-sort-amount-down-alt absolute left-3.5 top-1/2 -translate-y-1/2 text-crema-oscuro text-xs pointer-events-none"></i>
+              <i class="fas fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-negro/40 text-[10px] pointer-events-none"></i>
+            </div>
+
+            <!-- Input de Búsqueda Dinámica -->
+            <div class="relative w-full sm:w-72">
+              <input 
+                type="text" 
+                id="catalog-search-input" 
+                placeholder="Buscar por nombre, código..." 
+                class="w-full bg-white text-negro text-xs rounded-xl pl-10 pr-4 py-3 border border-crema-claro focus:outline-none focus:border-crema-oscuro focus:ring-1 focus:ring-crema-oscuro shadow-sm placeholder:text-negro/40"
+              />
+              <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-negro/40 text-xs"></i>
+            </div>
+
           </div>
         </div>
 
