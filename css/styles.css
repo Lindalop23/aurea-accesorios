@@ -1,0 +1,165 @@
+/* ==========================================================================
+   ÁUREA ACCESORIOS - Custom Stylesheet
+   Paleta:
+   - Negro: #090909
+   - Crema Oscuro: #ab8b6e
+   - Crema: #b4a28d
+   - Crema Claro: #dfd8cf
+   - Gris: #e8e5e0
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-negro: #090909;
+  --color-crema-oscuro: #ab8b6e;
+  --color-crema: #b4a28d;
+  --color-crema-claro: #dfd8cf;
+  --color-gris: #e8e5e0;
+  --color-dorado-brillo: #d4af37;
+  --color-dorado-suave: #f3e5ab;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--color-negro);
+}
+
+.font-serif-luxury {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-gris);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-crema-oscuro);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-negro);
+}
+
+/* Glassmorphism effects */
+.glass-nav {
+  background: rgba(232, 229, 224, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.glass-modal {
+  background: rgba(9, 9, 9, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+/* Radiant Gold Gradient & Effects */
+.gold-gradient {
+  background: linear-gradient(135deg, #ab8b6e 0%, #d4af37 50%, #ab8b6e 100%);
+}
+
+.gold-text-gradient {
+  background: linear-gradient(135deg, #7c5d3f 0%, #ab8b6e 50%, #5a4025 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shimmer-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.5) 45%,
+    transparent 70%
+  );
+  transform: rotate(25deg);
+  animation: shimmer 4s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  35%, 100% { transform: translateX(100%) rotate(25deg); }
+}
+
+/* Pulsing subtle glow for WhatsApp and Cart badges */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(37, 211, 102, 0);
+  }
+}
+
+.fab-whatsapp {
+  animation: pulseGlow 2.5s infinite;
+}
+
+/* Image zoom effect on category cards */
+.category-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+}
+
+.category-card:hover .cat-img {
+  transform: scale(1.08);
+}
+
+.cat-img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth drawer animations */
+.cart-drawer-overlay {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.cart-drawer-panel {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Toast notification */
+.toast-enter {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.toast-show {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-exit {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.3s ease-in;
+}
+
+/* Delicate border utility */
+.border-crema-delicate {
+  border-color: rgba(171, 139, 110, 0.35);
+}
