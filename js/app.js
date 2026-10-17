@@ -3,6 +3,7 @@
  * ÁUREA ACCESORIOS - Single Page Application Core Engine (app.js)
  * ==========================================================================
  * Desarrollado con JavaScript puro (Vanilla JS), LocalStorage y API de WhatsApp.
+ * Adaptado dinámicamente al inventario real extraído de Excel.
  */
 
 // ==========================================
@@ -15,8 +16,8 @@ const CONFIG = {
   BRAND_NAME: 'Áurea Accesorios',
   SHIPPING_ORIGIN: 'Mérida, Venezuela',
   CURRENCY_SYMBOL: '$',
-  STORAGE_CART_KEY: 'aurea_cart_v1',
-  DEFAULT_WHATSAPP_MSG: '¡Hola Áurea Accesorios! ✨ Vengo desde su tienda online y deseo información sobre sus productos y envíos.'
+  STORAGE_CART_KEY: 'aurea_cart_v2',
+  DEFAULT_WHATSAPP_MSG: '¡Hola Áurea Accesorios! ✨ Vengo desde su tienda online y deseo información sobre sus joyas y envíos nacionales desde Mérida.'
 };
 
 // ==========================================
@@ -67,9 +68,27 @@ function saveCartToStorage() {
   }
 }
 
+function getProductDisplayName(product) {
+  if (product.nombre && product.nombre.trim() !== '' && product.nombre !== '[NOMBRE AQUÍ]') {
+    return product.nombre;
+  }
+  return `${product.categoria} (${product.id})`;
+}
+
+function getProductFallbackImage(categoria) {
+  if (CATEGORIAS_METADATA && CATEGORIAS_METADATA[categoria] && CATEGORIAS_METADATA[categoria].imagenFallback) {
+    return CATEGORIAS_METADATA[categoria].imagenFallback;
+  }
+  return 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop';
+}
+
 function addToCart(productId, quantity = 1) {
-  const product = PRODUCTS_DATA.find(p => p.id === productId);
+  const product = productos.find(p => p.id === productId);
   if (!product) return;
+
+  const displayName = getProductDisplayName(product);
+  const numericPrice = parsePrecio(product.precio);
+  const fallbackImg = getProductFallbackImage(product.categoria);
 
   const existingItemIndex = AppState.cart.findIndex(item => item.id === productId);
 
@@ -78,10 +97,12 @@ function addToCart(productId, quantity = 1) {
   } else {
     AppState.cart.push({
       id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      categoryName: product.categoryName,
+      nombre: displayName,
+      precio: numericPrice,
+      precioOriginal: product.precio,
+      categoria: product.categoria,
+      imagen: product.imagen,
+      fallbackImagen: fallbackImg,
       quantity: quantity
     });
   }
@@ -89,7 +110,7 @@ function addToCart(productId, quantity = 1) {
   saveCartToStorage();
   updateCartCounters();
   renderCartDrawer();
-  showToast(`¡"${product.name}" añadido al carrito! ✨`);
+  showToast(`¡"${displayName}" añadido al carrito! ✨`);
 }
 
 function updateCartQuantity(productId, delta) {
@@ -122,7 +143,7 @@ function clearCart() {
 }
 
 function getCartTotal() {
-  return AppState.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  return AppState.cart.reduce((total, item) => total + (item.precio * item.quantity), 0);
 }
 
 function getCartItemsCount() {
@@ -170,36 +191,46 @@ function renderCartDrawer() {
 
   let itemsHTML = '';
   AppState.cart.forEach(item => {
-    const subtotal = (item.price * item.quantity).toFixed(2);
+    const subtotalText = item.precio > 0 
+      ? `${CONFIG.CURRENCY_SYMBOL}${(item.precio * item.quantity).toFixed(2)}`
+      : 'Por cotizar';
+
+    const unitPriceText = item.precio > 0
+      ? `${CONFIG.CURRENCY_SYMBOL}${item.precio.toFixed(2)} c/u`
+      : 'Precio a consultar';
+
     itemsHTML += `
       <div class="flex items-center gap-3 p-3 bg-white rounded-xl border border-crema/20 shadow-sm transition hover:border-crema-oscuro/40">
         <img 
-          src="${item.image}" 
-          alt="${item.name}" 
-          class="w-16 h-16 object-cover rounded-lg border border-crema-claro"
-          onerror="this.src='https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=200&auto=format&fit=crop'"
+          src="${item.imagen}" 
+          alt="${item.nombre}" 
+          class="w-16 h-16 object-cover rounded-lg border border-crema-claro bg-gris"
+          onerror="this.onerror=null; this.src='${item.fallbackImagen}'"
         />
         <div class="flex-1 min-w-0">
-          <p class="text-xs uppercase tracking-wider text-crema-oscuro font-medium truncate">${item.categoryName}</p>
-          <h4 class="text-sm font-semibold text-negro truncate">${item.name}</h4>
-          <p class="text-xs text-negro/70 font-medium">${CONFIG.CURRENCY_SYMBOL}${item.price.toFixed(2)} c/u</p>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-mono font-bold bg-gris text-negro px-1.5 py-0.5 rounded">${item.id}</span>
+            <p class="text-xs uppercase tracking-wider text-crema-oscuro font-medium truncate">${item.categoria}</p>
+          </div>
+          <h4 class="text-sm font-semibold text-negro truncate mt-0.5">${item.nombre}</h4>
+          <p class="text-xs text-negro/70 font-medium">${unitPriceText}</p>
           
           <div class="flex items-center gap-2 mt-2">
             <div class="inline-flex items-center border border-crema/30 rounded-lg bg-gris/50">
               <button 
-                onclick="updateCartQuantity(${item.id}, -1)" 
+                onclick="updateCartQuantity('${item.id}', -1)" 
                 class="px-2 py-0.5 text-xs text-negro hover:bg-crema-claro rounded-l transition"
                 aria-label="Disminuir cantidad"
               >-</button>
               <span class="px-2 text-xs font-semibold text-negro">${item.quantity}</span>
               <button 
-                onclick="updateCartQuantity(${item.id}, 1)" 
+                onclick="updateCartQuantity('${item.id}', 1)" 
                 class="px-2 py-0.5 text-xs text-negro hover:bg-crema-claro rounded-r transition"
                 aria-label="Aumentar cantidad"
               >+</button>
             </div>
             <button 
-              onclick="removeFromCart(${item.id})" 
+              onclick="removeFromCart('${item.id}')" 
               class="text-xs text-red-500 hover:text-red-700 ml-auto transition flex items-center gap-1"
               title="Eliminar artículo"
             >
@@ -210,7 +241,7 @@ function renderCartDrawer() {
           </div>
         </div>
         <div class="text-right pl-2">
-          <span class="text-sm font-bold text-negro">${CONFIG.CURRENCY_SYMBOL}${subtotal}</span>
+          <span class="text-sm font-bold text-negro">${subtotalText}</span>
         </div>
       </div>
     `;
@@ -244,58 +275,72 @@ function finalizeOrderToWhatsApp() {
   if (clientCity) {
     message += `📍 *Ciudad / Estado de Envío:* ${clientCity}\n`;
   }
-  message += `📦 *Origen del envío:* ${CONFIG.SHIPPING_ORIGIN}\n\n`;
+  message += `📦 *Origen del despacho:* ${CONFIG.SHIPPING_ORIGIN}\n\n`;
 
   message += `🛍️ *DETALLE DE MI PEDIDO:*\n`;
   AppState.cart.forEach((item, index) => {
-    const itemTotal = (item.price * item.quantity).toFixed(2);
-    message += `${index + 1}. *${item.name}* (x${item.quantity}) - ${CONFIG.CURRENCY_SYMBOL}${itemTotal}\n`;
+    const itemTotalStr = item.precio > 0
+      ? `${CONFIG.CURRENCY_SYMBOL}${(item.precio * item.quantity).toFixed(2)}`
+      : 'Por cotizar';
+    message += `${index + 1}. *[${item.id}] ${item.nombre}* (x${item.quantity}) - ${itemTotalStr}\n`;
   });
 
-  message += `\n💰 *TOTAL A PAGAR:* ${CONFIG.CURRENCY_SYMBOL}${getCartTotal().toFixed(2)} USD\n\n`;
+  const total = getCartTotal();
+  if (total > 0) {
+    message += `\n💰 *TOTAL ESTIMADO:* ${CONFIG.CURRENCY_SYMBOL}${total.toFixed(2)} USD\n\n`;
+  } else {
+    message += `\n💰 *TOTAL:* A convenir según cotización\n\n`;
+  }
+  
   message += `Por favor, confírmenme la disponibilidad y los métodos de pago (Pago Móvil / Zelle / Efectivo / Transferencia) para concretar el despacho nacional. ¡Muchas gracias! ✨`;
 
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-  // Abre WhatsApp en pestaña nueva
   window.open(whatsappUrl, '_blank');
 }
 
 // ==========================================
-// 7. RENDERIZADO DE CATEGORÍAS
+// 7. RENDERIZADO DE CATEGORÍAS (DINÁMICO)
 // ==========================================
 function renderCategoriesGrid() {
   const container = document.getElementById('categories-grid');
   if (!container) return;
 
+  const categoriasUnicas = obtenerCategoriasUnicas();
   let html = '';
-  CATEGORIES_DATA.forEach(cat => {
-    const productCount = PRODUCTS_DATA.filter(p => p.category === cat.id).length;
+
+  categoriasUnicas.forEach(catName => {
+    const productCount = productos.filter(p => p.categoria === catName).length;
+    const catMeta = CATEGORIAS_METADATA[catName] || {
+      descripcion: `Piezas selectas de ${catName}`,
+      imagenFallback: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&auto=format&fit=crop'
+    };
+
     html += `
       <div 
-        onclick="filterByCategory('${cat.id}')"
+        onclick="filterByCategory('${catName}')"
         class="category-card group cursor-pointer relative overflow-hidden rounded-2xl bg-white border border-crema-claro shadow-sm hover:shadow-luxury transition-all duration-300"
       >
         <div class="relative h-44 overflow-hidden bg-gris">
           <img 
-            src="${cat.image}" 
-            alt="${cat.name}" 
+            src="${catMeta.imagenFallback}" 
+            alt="${catName}" 
             class="cat-img w-full h-full object-cover transition-transform duration-700"
-            onerror="this.src='https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&auto=format&fit=crop'"
+            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&auto=format&fit=crop'"
           />
-          <div class="absolute inset-0 bg-gradient-to-t from-negro/70 via-negro/20 to-transparent"></div>
-          <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-semibold text-negro shadow">
+          <div class="absolute inset-0 bg-gradient-to-t from-negro/75 via-negro/20 to-transparent"></div>
+          <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-semibold text-negro shadow">
             ${productCount} piezas
           </div>
         </div>
         <div class="p-4 text-center bg-white">
           <h3 class="font-serif-luxury text-xl font-bold text-negro group-hover:text-crema-oscuro transition-colors tracking-wide">
-            ${cat.name}
+            ${catName}
           </h3>
-          <p class="text-xs text-negro/60 mt-1 line-clamp-1">${cat.description}</p>
+          <p class="text-xs text-negro/60 mt-1 line-clamp-1">${catMeta.descripcion}</p>
           <span class="inline-flex items-center gap-1 text-xs text-crema-oscuro font-semibold mt-3 group-hover:translate-x-1 transition-transform">
-            Explorar piezas
+            Ver piezas
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -316,35 +361,35 @@ function renderCollectionsGrid() {
   if (!container) return;
 
   let html = '';
-  COLLECTIONS_DATA.forEach(col => {
-    const count = PRODUCTS_DATA.filter(p => p.tags && p.tags.includes(col.tag)).length;
+  COLECCIONES_DATA.forEach(col => {
+    const count = productos.filter(p => p.coleccion && p.coleccion.toLowerCase().includes(col.tag.toLowerCase())).length;
     html += `
       <div 
-        onclick="filterByCollection('${col.tag}', '${col.name}')"
-        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-gold-glow transition-all duration-500 min-h-[320px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+        onclick="filterByCollection('${col.tag}', '${col.nombre}')"
+        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-gold-glow transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
       >
         <img 
-          src="${col.image}" 
-          alt="${col.name}" 
+          src="${col.imagen}" 
+          alt="${col.nombre}" 
           class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-700"
-          onerror="this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
+          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/50 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
         
         <div class="relative z-10">
-          <span class="inline-block bg-dorado/90 text-negro text-xs uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-3 shadow">
+          <span class="inline-block bg-dorado text-negro text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
             Colección Especial
           </span>
-          <h3 class="font-serif-luxury text-3xl font-bold text-white group-hover:text-dorado-light transition-colors">
-            ${col.name}
+          <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-dorado-light transition-colors">
+            ${col.nombre}
           </h3>
-          <p class="text-crema-claro text-xs font-medium italic mt-1">${col.subtitle}</p>
-          <p class="text-gris/80 text-xs mt-2 line-clamp-2">${col.description}</p>
+          <p class="text-crema-claro text-xs font-medium italic mt-1">${col.subtitulo}</p>
+          <p class="text-gris/80 text-xs mt-2 line-clamp-2">${col.descripcion}</p>
           
           <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
-            <span class="text-xs text-white/90 font-medium">${count} piezas en esta colección</span>
+            <span class="text-xs text-white/90 font-medium">${count > 0 ? `${count} piezas asociadas` : 'Ver selección'}</span>
             <span class="inline-flex items-center gap-1.5 text-xs text-dorado font-bold group-hover:translate-x-1.5 transition-transform">
-              Ver colección
+              Explorar
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
@@ -359,43 +404,40 @@ function renderCollectionsGrid() {
 }
 
 // ==========================================
-// 9. BARRA DE FILTROS Y BÚSQUEDA
+// 9. BARRA DE FILTROS DINÁMICOS POR CATEGORÍA
 // ==========================================
 function renderFilterTabs() {
   const container = document.getElementById('catalog-filter-tabs');
   if (!container) return;
 
-  const filters = [
-    { id: 'all', name: 'Todos' },
-    { id: 'anillos', name: 'Anillos' },
-    { id: 'zarcillos', name: 'Zarcillos' },
-    { id: 'cadenas-con-dijes', name: 'Cadenas con Dijes' },
-    { id: 'cadenas-sin-dijes', name: 'Cadenas sin Dijes' },
-    { id: 'earcuff', name: 'Earcuff' },
-    { id: 'brazaletes', name: 'Brazaletes' },
-    { id: 'pulseras', name: 'Pulseras' },
-    { id: 'reloj-vintage', name: 'Relojes Vintage' },
-    { id: 'reloj-deportivo', name: 'Relojes Deportivos' },
-    { id: 'termos', name: 'Termos' },
-    { id: 'panoletas', name: 'Pañoletas' },
-    { id: 'collares-chicle', name: 'Collares Chicle' },
-    { id: 'monederos', name: 'Monederos' },
-    { id: 'lentes', name: 'Lentes' }
-  ];
+  const categoriasUnicas = obtenerCategoriasUnicas();
+  
+  let html = `
+    <button 
+      onclick="setCategoryFilter('all')"
+      class="px-4 py-2 text-xs font-semibold rounded-full whitespace-nowrap transition-all duration-200 ${
+        AppState.activeCategory === 'all' && !AppState.activeTag
+          ? 'bg-negro text-white shadow-md' 
+          : 'bg-white text-negro/80 hover:bg-crema-claro border border-crema-claro'
+      }"
+    >
+      Todas (${productos.length})
+    </button>
+  `;
 
-  let html = '';
-  filters.forEach(f => {
-    const isActive = AppState.activeCategory === f.id && !AppState.activeTag;
+  categoriasUnicas.forEach(catName => {
+    const isActive = AppState.activeCategory === catName && !AppState.activeTag;
+    const catCount = productos.filter(p => p.categoria === catName).length;
     html += `
       <button 
-        onclick="setCategoryFilter('${f.id}')"
+        onclick="setCategoryFilter('${catName}')"
         class="px-4 py-2 text-xs font-semibold rounded-full whitespace-nowrap transition-all duration-200 ${
           isActive 
             ? 'bg-negro text-white shadow-md' 
             : 'bg-white text-negro/80 hover:bg-crema-claro border border-crema-claro'
         }"
       >
-        ${f.name}
+        ${catName} (${catCount})
       </button>
     `;
   });
@@ -414,14 +456,14 @@ function renderProductsCatalog() {
   if (!container) return;
 
   // Filtrado de productos según categoría, tag de colección o término de búsqueda
-  let filtered = PRODUCTS_DATA.filter(product => {
+  let filtered = productos.filter(product => {
     // Filtro por colección (tag)
     if (AppState.activeTag) {
-      if (!product.tags || !product.tags.includes(AppState.activeTag)) {
+      if (!product.coleccion || !product.coleccion.toLowerCase().includes(AppState.activeTag.toLowerCase())) {
         return false;
       }
     } else if (AppState.activeCategory !== 'all') {
-      if (product.category !== AppState.activeCategory) {
+      if (product.categoria !== AppState.activeCategory) {
         return false;
       }
     }
@@ -429,10 +471,11 @@ function renderProductsCatalog() {
     // Filtro por búsqueda de texto
     if (AppState.searchQuery.trim() !== '') {
       const q = AppState.searchQuery.toLowerCase();
-      const matchName = product.name.toLowerCase().includes(q);
-      const matchCat = product.categoryName.toLowerCase().includes(q);
-      const matchDesc = product.description.toLowerCase().includes(q);
-      if (!matchName && !matchCat && !matchDesc) return false;
+      const matchName = product.nombre && product.nombre.toLowerCase().includes(q);
+      const matchId = product.id && product.id.toLowerCase().includes(q);
+      const matchCat = product.categoria && product.categoria.toLowerCase().includes(q);
+      const matchCol = product.coleccion && product.coleccion.toLowerCase().includes(q);
+      if (!matchName && !matchId && !matchCat && !matchCol) return false;
     }
 
     return true;
@@ -440,31 +483,29 @@ function renderProductsCatalog() {
 
   // Contador de piezas encontradas
   if (productsCountEl) {
-    productsCountEl.textContent = `${filtered.length} piezas encontradas`;
+    productsCountEl.textContent = `${filtered.length} piezas encontradas en el catálogo`;
   }
 
   // Notificación visual de filtro activo
   if (activeFilterNotice) {
     if (AppState.activeTag) {
-      const colObj = COLLECTIONS_DATA.find(c => c.tag === AppState.activeTag);
-      const colName = colObj ? colObj.name : AppState.activeTag;
+      const colObj = COLECCIONES_DATA.find(c => c.tag === AppState.activeTag);
+      const colName = colObj ? colObj.nombre : AppState.activeTag;
       activeFilterNotice.classList.remove('hidden');
       activeFilterNotice.innerHTML = `
-        <span class="text-xs text-negro/70">Mostrando Colección Especial:</span>
-        <span class="text-xs font-bold text-crema-oscuro uppercase tracking-wider bg-crema-claro px-3 py-1 rounded-full flex items-center gap-1.5">
+        <span class="text-xs text-negro/70">Colección activa:</span>
+        <span class="text-xs font-bold text-crema-oscuro uppercase tracking-wider bg-crema-claro px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
           ${colName}
-          <button onclick="resetFilters()" class="hover:text-red-600 transition" title="Quitar filtro">×</button>
+          <button onclick="resetFilters()" class="hover:text-red-600 transition ml-1" title="Quitar filtro">×</button>
         </span>
       `;
     } else if (AppState.activeCategory !== 'all') {
-      const catObj = CATEGORIES_DATA.find(c => c.id === AppState.activeCategory);
-      const catName = catObj ? catObj.name : AppState.activeCategory;
       activeFilterNotice.classList.remove('hidden');
       activeFilterNotice.innerHTML = `
         <span class="text-xs text-negro/70">Categoría seleccionada:</span>
-        <span class="text-xs font-bold text-crema-oscuro uppercase tracking-wider bg-crema-claro px-3 py-1 rounded-full flex items-center gap-1.5">
-          ${catName}
-          <button onclick="resetFilters()" class="hover:text-red-600 transition" title="Quitar filtro">×</button>
+        <span class="text-xs font-bold text-crema-oscuro uppercase tracking-wider bg-crema-claro px-3 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+          ${AppState.activeCategory}
+          <button onclick="resetFilters()" class="hover:text-red-600 transition ml-1" title="Quitar filtro">×</button>
         </span>
       `;
     } else {
@@ -483,13 +524,13 @@ function renderProductsCatalog() {
         </div>
         <h3 class="font-serif-luxury text-2xl font-bold text-negro">No se encontraron piezas</h3>
         <p class="text-xs text-negro/60 mt-1 max-w-md mx-auto">
-          No tenemos piezas que coincidan con los filtros aplicados en este momento.
+          No tenemos piezas que coincidan con la búsqueda o categoría seleccionada.
         </p>
         <button 
           onclick="resetFilters()" 
           class="mt-5 px-6 py-2.5 bg-negro text-white rounded-full text-xs font-semibold hover:bg-crema-oscuro transition"
         >
-          Ver todo el catálogo
+          Ver todo el catálogo (${productos.length} piezas)
         </button>
       </div>
     `;
@@ -498,58 +539,71 @@ function renderProductsCatalog() {
 
   let html = '';
   filtered.forEach(p => {
-    // Badges visuales
-    let badgeHTML = '';
-    if (p.isNew) {
-      badgeHTML += `<span class="bg-negro text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full shadow">Nuevo</span>`;
-    }
-    if (p.isFeatured) {
-      badgeHTML += `<span class="bg-dorado text-negro text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full shadow">Destacado</span>`;
-    }
+    const displayName = getProductDisplayName(p);
+    const fallbackImg = getProductFallbackImage(p.categoria);
+    const numericPrice = parsePrecio(p.precio);
+    const formattedPrice = formatearPrecio(p.precio);
 
     html += `
       <div class="group bg-white rounded-2xl overflow-hidden border border-crema-claro shadow-sm hover:shadow-luxury transition-all duration-300 flex flex-col justify-between">
+        
+        <!-- Contenedor Imagen con Fallback Inteligente -->
         <div class="relative overflow-hidden bg-gris aspect-square">
           <img 
-            src="${p.image}" 
-            alt="${p.name}" 
+            src="${p.imagen}" 
+            alt="${displayName}" 
             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            onerror="this.src='https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop'"
+            onerror="this.onerror=null; this.src='${fallbackImg}'"
           />
+          
+          <!-- Badges de Código SKU y Colección -->
           <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-            ${badgeHTML}
+            <span class="bg-negro/90 backdrop-blur-sm text-dorado text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">
+              ${p.id}
+            </span>
+            ${p.coleccion ? `
+              <span class="bg-dorado text-negro text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                ${p.coleccion}
+              </span>
+            ` : ''}
           </div>
+
+          <!-- Botón flotante consulta rápida WhatsApp -->
           <button 
-            onclick="quickWhatsAppInquiry(${p.id})" 
-            title="Consultar disponibilidad por WhatsApp"
+            onclick="quickWhatsAppInquiry('${p.id}')" 
+            title="Consultar pieza por WhatsApp"
             class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm text-green-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow hover:scale-110"
           >
             <i class="fab fa-whatsapp text-lg"></i>
           </button>
         </div>
 
+        <!-- Información de la Pieza -->
         <div class="p-4 flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs text-crema-oscuro font-semibold uppercase tracking-wider mb-1">
-              <span>${p.categoryName}</span>
+              <span>${p.categoria}</span>
               <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[10px]">Disponible</span>
             </div>
+
             <h3 class="font-serif-luxury text-lg font-bold text-negro group-hover:text-crema-oscuro transition-colors line-clamp-1">
-              ${p.name}
+              ${displayName}
             </h3>
+
             <p class="text-xs text-negro/60 mt-1 line-clamp-2 leading-relaxed">
-              ${p.description}
+              ${CATEGORIAS_METADATA[p.categoria] ? CATEGORIAS_METADATA[p.categoria].descripcion : 'Joyería y accesorio de alta distinción Áurea.'}
             </p>
           </div>
 
+          <!-- Precio y Botón Añadir -->
           <div class="mt-4 pt-3 border-t border-crema-claro/60 flex items-center justify-between">
             <div>
               <span class="text-[10px] text-negro/50 uppercase tracking-widest block font-medium">Precio</span>
-              <span class="text-lg font-bold text-negro">${CONFIG.CURRENCY_SYMBOL}${p.price.toFixed(2)}</span>
+              <span class="text-lg font-bold text-negro">${formattedPrice}</span>
             </div>
             
             <button 
-              onclick="addToCart(${p.id})"
+              onclick="addToCart('${p.id}')"
               class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-negro hover:bg-crema-oscuro text-white text-xs font-semibold rounded-xl shadow transition duration-200 active:scale-95"
               aria-label="Añadir al carrito"
             >
@@ -560,6 +614,7 @@ function renderProductsCatalog() {
             </button>
           </div>
         </div>
+
       </div>
     `;
   });
@@ -575,8 +630,6 @@ function filterByCategory(categoryId) {
   AppState.activeTag = null;
   renderFilterTabs();
   renderProductsCatalog();
-
-  // Scroll suave hacia el catálogo
   scrollToElement('catalogo');
 }
 
@@ -585,8 +638,6 @@ function filterByCollection(tag, name) {
   AppState.activeCategory = 'all';
   renderFilterTabs();
   renderProductsCatalog();
-
-  // Scroll suave hacia el catálogo
   scrollToElement('catalogo');
 }
 
@@ -617,10 +668,13 @@ function handleSearch(event) {
 // 12. CONSULTA DIRECTA DE PRODUCTO POR WHATSAPP
 // ==========================================
 function quickWhatsAppInquiry(productId) {
-  const product = PRODUCTS_DATA.find(p => p.id === productId);
+  const product = productos.find(p => p.id === productId);
   if (!product) return;
 
-  const msg = `✨ *¡Hola Áurea Accesorios!* ✨\nMe enamoré de esta pieza en su tienda online y deseo consultar disponibilidad:\n\n• *${product.name}* (${product.categoryName})\n• *Precio:* ${CONFIG.CURRENCY_SYMBOL}${product.price.toFixed(2)} USD\n\n¿Tienen envíos disponibles a mi ciudad? (Envíos desde Mérida, Venezuela) ¡Gracias!`;
+  const displayName = getProductDisplayName(product);
+  const formattedPrice = formatearPrecio(product.precio);
+
+  const msg = `✨ *¡Hola Áurea Accesorios!* ✨\nMe encantó esta pieza de su inventario online y deseo consultar disponibilidad:\n\n• *Código:* ${product.id}\n• *Pieza:* ${displayName}\n• *Categoría:* ${product.categoria}\n• *Precio:* ${formattedPrice}\n\n¿Tienen envíos disponibles a mi ciudad? (Envíos desde Mérida, Venezuela). ¡Muchas gracias!`;
   const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 }
@@ -668,7 +722,6 @@ function toggleCartDrawer(open = true) {
   if (open) {
     drawer.classList.remove('hidden');
     renderCartDrawer();
-    // Previene scroll del fondo
     document.body.style.overflow = 'hidden';
     setTimeout(() => {
       overlay.classList.remove('opacity-0');
@@ -748,13 +801,11 @@ function setupSmoothScroll() {
 }
 
 function setupEventListeners() {
-  // Búsqueda en catálogo
   const searchInput = document.getElementById('catalog-search-input');
   if (searchInput) {
     searchInput.addEventListener('input', handleSearch);
   }
 
-  // Cerrar carrito con tecla Escape
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       toggleCartDrawer(false);
