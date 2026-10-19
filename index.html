@@ -318,9 +318,114 @@
           </div>
         </div>
 
-        <!-- Cuadrícula Dinámica de Colecciones (3 Ediciones) -->
+        <!-- Cuadrícula de Ediciones Especiales (3 Columnas) -->
         <div id="collections-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Renderizado dinámico vía app.js -->
+          
+          <!-- Tarjeta 1: Día de las Madres -->
+          <div 
+            onclick="filterByCollection('dia-de-las-madres', 'Día de las Madres')"
+            class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop" 
+              alt="Día de las Madres" 
+              class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-700"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
+            
+            <div class="relative z-10">
+              <span class="inline-block bg-[#ab8b6e] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
+                Colección Especial
+              </span>
+              <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-crema-claro transition-colors">
+                Día de las Madres
+              </h3>
+              <p class="text-crema-claro text-xs font-medium italic mt-1">Amor eterno y gratitud celestial</p>
+              <p class="text-gris/80 text-xs mt-2 line-clamp-2">Detalles escogidos para homenajear a la mujer más valiosa de nuestras vidas.</p>
+              
+              <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
+                <span class="text-xs text-white/90 font-medium">Ver selección</span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-[#ab8b6e] font-bold group-hover:translate-x-1.5 transition-transform">
+                  Explorar
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Amor y Amistad (Tarjeta Central) -->
+          <div 
+            onclick="filterByCollection('amor-y-amistad', 'Amor y Amistad')"
+            class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800&auto=format&fit=crop" 
+              alt="Amor y Amistad" 
+              class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-700"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
+            
+            <div class="relative z-10">
+              <span class="inline-block bg-[#ab8b6e] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
+                Colección Especial
+              </span>
+              <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-crema-claro transition-colors">
+                Amor y Amistad
+              </h3>
+              <p class="text-crema-claro text-xs font-medium italic mt-1">Vínculos áureos e inquebrantables</p>
+              <p class="text-gris/80 text-xs mt-2 line-clamp-2">Accesorios ideales para compartir complicidad, cariño y momentos compartidos.</p>
+              
+              <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
+                <span class="text-xs text-white/90 font-medium">Ver selección</span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-[#ab8b6e] font-bold group-hover:translate-x-1.5 transition-transform">
+                  Explorar
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 3: Colección Diciembre -->
+          <div 
+            onclick="filterByCollection('diciembre', 'Colección Diciembre')"
+            class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop" 
+              alt="Colección Diciembre" 
+              class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-700"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
+            
+            <div class="relative z-10">
+              <span class="inline-block bg-[#ab8b6e] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
+                Colección Especial
+              </span>
+              <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-crema-claro transition-colors">
+                Colección Diciembre
+              </h3>
+              <p class="text-crema-claro text-xs font-medium italic mt-1">Brillo de prosperidad y año nuevo</p>
+              <p class="text-gris/80 text-xs mt-2 line-clamp-2">Destellos radiantes y elegantes para recibir la abundancia de un nuevo ciclo.</p>
+              
+              <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
+                <span class="text-xs text-white/90 font-medium">Ver selección</span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-[#ab8b6e] font-bold group-hover:translate-x-1.5 transition-transform">
+                  Explorar
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -988,8 +1093,8 @@
   <!-- ========================================== -->
   <!-- SCRIPTS DE LA APLICACIÓN                   -->
   <!-- ========================================== -->
-  <script src="js/products.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/products.js?v=2.1"></script>
+  <script src="js/app.js?v=2.1"></script>
 
 </body>
 </html>
