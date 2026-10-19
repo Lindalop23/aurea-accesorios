@@ -36,60 +36,60 @@
  */
 
 const productos = [
-  // --- ZARCILLOS ---
-  { id: "PRODZ01", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ01.jpg" },
-  { id: "PRODZ02", nombre: "[NOMBRE AQUÍ]", precio: "3,5", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ02.jpg" },
-  { id: "PRODZ03", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ03.jpg" },
-  { id: "PRODZ04", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ04.jpg" },
-  { id: "PRODZ05", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ05.jpg" },
-
   // --- ANILLOS ---
   { id: "PRODA06", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Anillos", coleccion: "", imagen: "./assets/images/catalogo/PRODA06.jpg" },
   { id: "PRODA06_B", nombre: "[NOMBRE AQUÍ]", precio: "5", categoria: "Anillos", coleccion: "", imagen: "./assets/images/catalogo/PRODA06_B.jpg" },
 
+  // --- BRAZALETES ---
+  { id: "PRODBr08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Brazaletes", coleccion: "", imagen: "./assets/images/catalogo/PRODBr08.jpg" },
+  { id: "PRODBr09", nombre: "[NOMBRE AQUÍ]", precio: "12", categoria: "Brazaletes", coleccion: "", imagen: "./assets/images/catalogo/PRODBr09.jpg" },
+
+  // --- CADENAS ---
+  { id: "PRODCad11", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Cadenas", coleccion: "", imagen: "./assets/images/catalogo/PRODCad11.jpg" },
+  { id: "PRODCad12", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Cadenas", coleccion: "", imagen: "./assets/images/catalogo/PRODCad12.jpg" },
+
+  // --- COLLARES CHICLE ---
+  { id: "PRODCH07", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Collares Chicle", coleccion: "", imagen: "./assets/images/catalogo/PRODCH07.jpg" },
+  { id: "PRODCH08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Collares Chicle", coleccion: "", imagen: "./assets/images/catalogo/PRODCH08.jpg" },
+
+  // --- JUEGOS ---
+  { id: "PRODJueg09", nombre: "[NOMBRE AQUÍ]", precio: "12", categoria: "Juegos", coleccion: "", imagen: "./assets/images/catalogo/PRODJueg09.jpg" },
+
+  // --- LENTES ---
+  { id: "PRODLen08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Lentes", coleccion: "", imagen: "./assets/images/catalogo/PRODLen08.jpg" },
+  { id: "PRODLen14", nombre: "[NOMBRE AQUÍ]", precio: "18,5", categoria: "Lentes", coleccion: "", imagen: "./assets/images/catalogo/PRODLen14.jpg" },
+
+  // --- MONEDEROS ---
+  { id: "PRODMon17", nombre: "[NOMBRE AQUÍ]", precio: "", categoria: "Monederos", coleccion: "", imagen: "./assets/images/catalogo/PRODMon17.jpg" },
+
   // --- PAÑOLETAS ---
   { id: "PRODPa06", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Pañoletas", coleccion: "", imagen: "./assets/images/catalogo/PRODPa06.jpg" },
   { id: "PRODPa07", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Pañoletas", coleccion: "", imagen: "./assets/images/catalogo/PRODPa07.jpg" },
+
+  // --- PEINETAS ---
+  { id: "PRODPe15", nombre: "[NOMBRE AQUÍ]", precio: "4,5", categoria: "Peinetas", coleccion: "", imagen: "./assets/images/catalogo/PRODPe15.jpg" },
+
+  // --- PINZAS ---
+  { id: "PRODPinz18", nombre: "[NOMBRE AQUÍ]", precio: "1", categoria: "Pinzas", coleccion: "", imagen: "./assets/images/catalogo/PRODPinz18.jpg" },
+  { id: "PRODPinz19", nombre: "[NOMBRE AQUÍ]", precio: "1", categoria: "Pinzas", coleccion: "", imagen: "./assets/images/catalogo/PRODPinz19.jpg" },
 
   // --- PULSERAS ---
   { id: "PRODPul07", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Pulseras", coleccion: "", imagen: "./assets/images/catalogo/PRODPul07.jpg" },
   { id: "PRODPul08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Pulseras", coleccion: "", imagen: "./assets/images/catalogo/PRODPul08.jpg" },
   { id: "PRODPul10", nombre: "[NOMBRE AQUÍ]", precio: "4,5", categoria: "Pulseras", coleccion: "", imagen: "./assets/images/catalogo/PRODPul10.jpg" },
 
-  // --- COLLARES CHICLE ---
-  { id: "PRODCH07", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Collares Chicle", coleccion: "", imagen: "./assets/images/catalogo/PRODCH07.jpg" },
-  { id: "PRODCH08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Collares Chicle", coleccion: "", imagen: "./assets/images/catalogo/PRODCH08.jpg" },
-
-  // --- BRAZALETES ---
-  { id: "PRODBr08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Brazaletes", coleccion: "", imagen: "./assets/images/catalogo/PRODBr08.jpg" },
-  { id: "PRODBr09", nombre: "[NOMBRE AQUÍ]", precio: "12", categoria: "Brazaletes", coleccion: "", imagen: "./assets/images/catalogo/PRODBr09.jpg" },
-
-  // --- LENTES ---
-  { id: "PRODLen08", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Lentes", coleccion: "", imagen: "./assets/images/catalogo/PRODLen08.jpg" },
-  { id: "PRODLen14", nombre: "[NOMBRE AQUÍ]", precio: "18,5", categoria: "Lentes", coleccion: "", imagen: "./assets/images/catalogo/PRODLen14.jpg" },
-
-  // --- JUEGOS ---
-  { id: "PRODJueg09", nombre: "[NOMBRE AQUÍ]", precio: "12", categoria: "Juegos", coleccion: "", imagen: "./assets/images/catalogo/PRODJueg09.jpg" },
-
-  // --- CADENAS ---
-  { id: "PRODCad11", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Cadenas", coleccion: "", imagen: "./assets/images/catalogo/PRODCad11.jpg" },
-  { id: "PRODCad12", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Cadenas", coleccion: "", imagen: "./assets/images/catalogo/PRODCad12.jpg" },
-
   // --- RELOJES ---
   { id: "PRODRel13", nombre: "[NOMBRE AQUÍ]", precio: "10", categoria: "Relojes", coleccion: "", imagen: "./assets/images/catalogo/PRODRel13.jpg" },
-
-  // --- PEINETAS ---
-  { id: "PRODPe15", nombre: "[NOMBRE AQUÍ]", precio: "4,5", categoria: "Peinetas", coleccion: "", imagen: "./assets/images/catalogo/PRODPe15.jpg" },
 
   // --- VINTAGE ---
   { id: "PRODVint16", nombre: "[NOMBRE AQUÍ]", precio: "15", categoria: "Vintage", coleccion: "", imagen: "./assets/images/catalogo/PRODVint16.jpg" },
 
-  // --- MONEDEROS ---
-  { id: "PRODMon17", nombre: "[NOMBRE AQUÍ]", precio: "", categoria: "Monederos", coleccion: "", imagen: "./assets/images/catalogo/PRODMon17.jpg" },
-
-  // --- PINZAS ---
-  { id: "PRODPinz18", nombre: "[NOMBRE AQUÍ]", precio: "1", categoria: "Pinzas", coleccion: "", imagen: "./assets/images/catalogo/PRODPinz18.jpg" },
-  { id: "PRODPinz19", nombre: "[NOMBRE AQUÍ]", precio: "1", categoria: "Pinzas", coleccion: "", imagen: "./assets/images/catalogo/PRODPinz19.jpg" }
+  // --- ZARCILLOS ---
+  { id: "PRODZ01", nombre: "[NOMBRE AQUÍ]", precio: "7", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ01.jpg" },
+  { id: "PRODZ02", nombre: "[NOMBRE AQUÍ]", precio: "3,5", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ02.jpg" },
+  { id: "PRODZ03", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ03.jpg" },
+  { id: "PRODZ04", nombre: "[NOMBRE AQUÍ]", precio: "8,5", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ04.jpg" },
+  { id: "PRODZ05", nombre: "[NOMBRE AQUÍ]", precio: "6", categoria: "Zarcillos", coleccion: "", imagen: "./assets/images/catalogo/PRODZ05.jpg" }
 ];
 
 // Metadatos decorativos y de presentación para cada categoría detectada en el inventario
@@ -152,15 +152,8 @@ const CATEGORIAS_METADATA = {
   }
 };
 
-// Colecciones predeterminadas de la marca (3 ediciones exclusivas)
+// Colecciones predeterminadas de la marca (3 ediciones exclusivas ordenadas alfabéticamente)
 const COLECCIONES_DATA = [
-  {
-    tag: "dia-de-las-madres",
-    nombre: "Día de las Madres",
-    subtitulo: "Amor eterno y gratitud celestial",
-    imagen: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop",
-    descripcion: "Detalles escogidos para homenajear a la mujer más valiosa de nuestras vidas."
-  },
   {
     tag: "amor-y-amistad",
     nombre: "Amor y Amistad",
@@ -174,10 +167,17 @@ const COLECCIONES_DATA = [
     subtitulo: "Brillo de prosperidad y año nuevo",
     imagen: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
     descripcion: "Destellos radiantes y elegantes para recibir la abundancia de un nuevo ciclo."
+  },
+  {
+    tag: "dia-de-las-madres",
+    nombre: "Día de las Madres",
+    subtitulo: "Amor eterno y gratitud celestial",
+    imagen: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop",
+    descripcion: "Detalles escogidos para homenajear a la mujer más valiosa de nuestras vidas."
   }
 ];
 
-// Helper: Extraer lista única de categorías desde el inventario real
+// Helper: Extraer lista única de categorías desde el inventario real en estricto orden alfabético (A-Z)
 function obtenerCategoriasUnicas() {
   const cats = [];
   productos.forEach(p => {
@@ -185,7 +185,7 @@ function obtenerCategoriasUnicas() {
       cats.push(p.categoria);
     }
   });
-  return cats;
+  return cats.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 }
 
 // Helper: Convertir precio de string a número (ej: "3,5" -> 3.5, "" -> 0)

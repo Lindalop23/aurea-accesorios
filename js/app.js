@@ -342,13 +342,6 @@ function renderCategoriesGrid() {
           <h3 class="font-serif-luxury text-xl font-bold text-negro group-hover:text-crema-oscuro transition-colors tracking-wide">
             ${catName}
           </h3>
-          <p class="text-xs text-negro/60 mt-1 line-clamp-1">${catMeta.descripcion}</p>
-          <span class="inline-flex items-center gap-1 text-xs text-crema-oscuro font-semibold mt-3 group-hover:translate-x-1 transition-transform">
-            Ver piezas
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </span>
         </div>
       </div>
     `;
@@ -370,7 +363,7 @@ function renderCollectionsGrid() {
     html += `
       <div 
         onclick="filterByCollection('${col.tag}', '${col.nombre}')"
-        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-[#161514] text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
       >
         <img 
           src="${col.imagen}" 
@@ -378,7 +371,7 @@ function renderCollectionsGrid() {
           class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-700"
           onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&auto=format&fit=crop'"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#161514] via-[#161514]/60 to-transparent"></div>
         
         <div class="relative z-10">
           <span class="inline-block bg-[#ab8b6e] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
@@ -387,8 +380,6 @@ function renderCollectionsGrid() {
           <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-crema-claro transition-colors">
             ${col.nombre}
           </h3>
-          <p class="text-crema-claro text-xs font-medium italic mt-1">${col.subtitulo}</p>
-          <p class="text-gris/80 text-xs mt-2 line-clamp-2">${col.descripcion}</p>
           
           <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
             <span class="text-xs text-white/90 font-medium">${count > 0 ? `${count} piezas asociadas` : 'Ver selección'}</span>
@@ -484,7 +475,7 @@ function renderProductsCatalog() {
     return true;
   });
 
-  // Ordenamiento dinámico (Menor a Mayor / Mayor a Menor)
+  // Ordenamiento dinámico (Menor a Mayor / Mayor a Menor / Alfabético A-Z por defecto)
   if (AppState.sortBy === 'price-asc') {
     filtered.sort((a, b) => {
       const priceA = parsePrecio(a.precio);
@@ -500,6 +491,13 @@ function renderProductsCatalog() {
       if (priceA === 0) return 1;
       if (priceB === 0) return -1;
       return priceB - priceA;
+    });
+  } else {
+    // Orden alfabético por defecto (A-Z)
+    filtered.sort((a, b) => {
+      const nameA = getProductDisplayName(a);
+      const nameB = getProductDisplayName(b);
+      return nameA.localeCompare(nameB, 'es', { sensitivity: 'base' });
     });
   }
 
@@ -600,18 +598,9 @@ function renderProductsCatalog() {
         <!-- Información de la Pieza -->
         <div class="p-4 flex-1 flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between text-xs text-crema-oscuro font-semibold uppercase tracking-wider mb-1">
-              <span>${p.categoria}</span>
-              <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[10px]">Disponible</span>
-            </div>
-
             <h3 class="font-serif-luxury text-lg font-bold text-negro group-hover:text-crema-oscuro transition-colors line-clamp-1">
               ${displayName}
             </h3>
-
-            <p class="text-xs text-negro/60 mt-1 line-clamp-2 leading-relaxed">
-              ${CATEGORIAS_METADATA[p.categoria] ? CATEGORIAS_METADATA[p.categoria].descripcion : 'Joyería y accesorio de alta distinción Áurea.'}
-            </p>
           </div>
 
           <!-- Precio y Botón Añadir -->
