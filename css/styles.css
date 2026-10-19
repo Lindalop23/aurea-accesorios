@@ -165,3 +165,21 @@ html {
 .border-crema-delicate {
   border-color: rgba(171, 139, 110, 0.35);
 }
+
+/* Sección Nosotros h2 styling */
+#nosotros h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: var(--color-negro);
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 640px) {
+  #nosotros h2 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
