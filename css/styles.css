@@ -51,7 +51,7 @@ html {
 
 /* Glassmorphism effects */
 .glass-nav {
-  background: rgba(232, 229, 224, 0.96);
+  background: rgba(9, 9, 9, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
