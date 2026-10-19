@@ -812,7 +812,7 @@ function setupFloatingWhatsApp() {
 function scrollToElement(elementId) {
   const el = document.getElementById(elementId);
   if (!el) return;
-  const navbarHeight = 80;
+  const navbarHeight = 96;
   const elementPosition = el.getBoundingClientRect().top + window.scrollY;
   const offsetPosition = elementPosition - navbarHeight;
 
