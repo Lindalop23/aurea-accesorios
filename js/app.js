@@ -10,9 +10,8 @@
 // 1. CONFIGURACIÓN GENERAL DE LA TIENDA
 // ==========================================
 const CONFIG = {
-  // Número de WhatsApp para recibir pedidos (código de país + número, sin signos ni espacios)
-  // Ejemplo Venezuela: 584121234567 o 584141234567
-  WHATSAPP_NUMBER: '584120000000', 
+  // Número de WhatsApp para recibir pedidos (código internacional Venezuela 58 + 4220213291)
+  WHATSAPP_NUMBER: '584220213291', 
   BRAND_NAME: 'Áurea Accesorios',
   SHIPPING_ORIGIN: 'Mérida, Venezuela',
   CURRENCY_SYMBOL: '$',

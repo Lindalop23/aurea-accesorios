@@ -95,9 +95,8 @@ El proyecto cuenta con la paleta de colores personalizada configurada en Tailwin
 Abre el archivo `js/app.js` y localiza las primeras líneas:
 ```javascript
 const CONFIG = {
-  // Coloca el código de país sin el símbolo "+" ni espacios.
-  // Ejemplo Venezuela (+58 412 1234567): '584121234567'
-  WHATSAPP_NUMBER: '584120000000', 
+  // Número oficial de Áurea Accesorios (Venezuela: 584220213291)
+  WHATSAPP_NUMBER: '584220213291', 
   BRAND_NAME: 'Áurea Accesorios',
   ...
 };
