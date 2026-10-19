@@ -370,7 +370,7 @@ function renderCollectionsGrid() {
     html += `
       <div 
         onclick="filterByCollection('${col.tag}', '${col.nombre}')"
-        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-gold-glow transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
+        class="group cursor-pointer relative overflow-hidden rounded-3xl bg-negro text-white shadow-xl hover:shadow-luxury-hover hover:border-crema-oscuro/60 transition-all duration-500 min-h-[300px] flex flex-col justify-end p-6 border border-crema-oscuro/30"
       >
         <img 
           src="${col.imagen}" 
@@ -381,10 +381,10 @@ function renderCollectionsGrid() {
         <div class="absolute inset-0 bg-gradient-to-t from-negro via-negro/60 to-transparent"></div>
         
         <div class="relative z-10">
-          <span class="inline-block bg-dorado text-negro text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
+          <span class="inline-block bg-[#ab8b6e] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded-full mb-2 shadow">
             Colección Especial
           </span>
-          <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-dorado-light transition-colors">
+          <h3 class="font-serif-luxury text-2xl sm:text-3xl font-bold text-white group-hover:text-crema-claro transition-colors">
             ${col.nombre}
           </h3>
           <p class="text-crema-claro text-xs font-medium italic mt-1">${col.subtitulo}</p>
@@ -392,7 +392,7 @@ function renderCollectionsGrid() {
           
           <div class="mt-4 flex items-center justify-between pt-3 border-t border-white/20">
             <span class="text-xs text-white/90 font-medium">${count > 0 ? `${count} piezas asociadas` : 'Ver selección'}</span>
-            <span class="inline-flex items-center gap-1.5 text-xs text-dorado font-bold group-hover:translate-x-1.5 transition-transform">
+            <span class="inline-flex items-center gap-1.5 text-xs text-[#ab8b6e] font-bold group-hover:translate-x-1.5 transition-transform">
               Explorar
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -583,11 +583,11 @@ function renderProductsCatalog() {
           
           <!-- Badges de Código SKU y Colección -->
           <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-            <span class="bg-negro/90 backdrop-blur-sm text-dorado text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">
+            <span class="bg-negro/90 backdrop-blur-sm text-crema text-[10px] font-mono font-bold px-2 py-0.5 rounded shadow">
               ${p.id}
             </span>
             ${p.coleccion ? `
-              <span class="bg-dorado text-negro text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
+              <span class="bg-[#ab8b6e] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
                 ${p.coleccion}
               </span>
             ` : ''}

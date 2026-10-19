@@ -119,7 +119,7 @@ const CATEGORIAS_METADATA = {
     imagenFallback: "https://images.unsplash.com/photo-1611591475152-473523dd66c8?q=80&w=800&auto=format&fit=crop"
   },
   "Lentes": {
-    descripcion: "Mirada audaz con protección y detalles dorados",
+    descripcion: "Mirada audaz con protección y acabados refinados",
     imagenFallback: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=800&auto=format&fit=crop"
   },
   "Juegos": {
@@ -152,7 +152,7 @@ const CATEGORIAS_METADATA = {
   }
 };
 
-// Colecciones predeterminadas de la marca
+// Colecciones predeterminadas de la marca (3 ediciones exclusivas)
 const COLECCIONES_DATA = [
   {
     tag: "dia-de-las-madres",
@@ -163,7 +163,7 @@ const COLECCIONES_DATA = [
   },
   {
     tag: "amor-y-amistad",
-    nombre: "Amor & Amistad",
+    nombre: "Amor y Amistad",
     subtitulo: "Vínculos áureos e inquebrantables",
     imagen: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=800&auto=format&fit=crop",
     descripcion: "Accesorios ideales para compartir complicidad, cariño y momentos compartidos."
@@ -173,14 +173,7 @@ const COLECCIONES_DATA = [
     nombre: "Colección Diciembre",
     subtitulo: "Brillo de prosperidad y año nuevo",
     imagen: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
-    descripcion: "Destellos intensos y dorados para recibir la abundancia de un nuevo ciclo."
-  },
-  {
-    tag: "favoritos",
-    nombre: "Favoritos Áurea",
-    subtitulo: "Piezas más aclamadas",
-    imagen: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=800&auto=format&fit=crop",
-    descripcion: "Los diseños esenciales que marcan el sello de elegancia de nuestra comunidad."
+    descripcion: "Destellos radiantes y elegantes para recibir la abundancia de un nuevo ciclo."
   }
 ];
 

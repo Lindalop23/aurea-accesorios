@@ -16,8 +16,6 @@
   --color-crema: #b4a28d;
   --color-crema-claro: #dfd8cf;
   --color-gris: #e8e5e0;
-  --color-dorado-brillo: #d4af37;
-  --color-dorado-suave: #f3e5ab;
 }
 
 html {
@@ -67,13 +65,13 @@ html {
   backdrop-filter: blur(6px);
 }
 
-/* Radiant Gold Gradient & Effects */
+/* Radiant Brand Gradient & Effects */
 .gold-gradient {
-  background: linear-gradient(135deg, #ab8b6e 0%, #d4af37 50%, #ab8b6e 100%);
+  background: linear-gradient(135deg, #ab8b6e 0%, #b4a28d 50%, #ab8b6e 100%);
 }
 
 .gold-text-gradient {
-  background: linear-gradient(135deg, #7c5d3f 0%, #ab8b6e 50%, #5a4025 100%);
+  background: linear-gradient(135deg, #ab8b6e 0%, #b4a28d 50%, #ab8b6e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
