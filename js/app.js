@@ -455,7 +455,6 @@ function renderFilterTabs() {
 function renderProductsCatalog() {
   const container = document.getElementById('products-grid');
   const activeFilterNotice = document.getElementById('active-filter-notice');
-  const productsCountEl = document.getElementById('products-count');
 
   if (!container) return;
 
@@ -502,11 +501,6 @@ function renderProductsCatalog() {
       if (priceB === 0) return -1;
       return priceB - priceA;
     });
-  }
-
-  // Contador de piezas encontradas
-  if (productsCountEl) {
-    productsCountEl.textContent = `${filtered.length} piezas encontradas en el catálogo`;
   }
 
   // Notificación visual de filtro activo
