@@ -16,8 +16,39 @@ const CONFIG = {
   SHIPPING_ORIGIN: 'Mérida, Venezuela',
   CURRENCY_SYMBOL: '$',
   STORAGE_CART_KEY: 'aurea_cart_v2',
-  DEFAULT_WHATSAPP_MSG: '¡Hola Áurea Accesorios! ✨ Vengo desde su tienda online y deseo información sobre sus joyas y envíos nacionales desde Mérida.'
+  DEFAULT_WHATSAPP_MSG: '¡Hola, Áurea accesorios! ✨ Estuve viendo su página web y me gustaría recibir asesoría sobre sus piezas.'
 };
+
+// ==========================================
+// TASA OFICIAL EURO BCV & RESPALDO NUMÉRICO
+// ==========================================
+// Variable de respaldo numérico por si la conexión a la API falla o tarda en responder
+const DEFAULT_EURO_BCV_RATE = 991.16;
+let euroBcvRate = DEFAULT_EURO_BCV_RATE;
+
+/**
+ * Consulta la API oficial del BCV en su endpoint de euro oficial:
+ * https://ve.dolarapi.com/v1/euros/oficial
+ * Extrae el valor oficial (promedio) de la respuesta.
+ */
+async function fetchEuroBcvRate() {
+  try {
+    const response = await fetch('https://ve.dolarapi.com/v1/euros/oficial');
+    if (!response.ok) {
+      throw new Error(`Error en respuesta API BCV: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data && typeof data.promedio === 'number' && data.promedio > 0) {
+      euroBcvRate = data.promedio;
+      console.log('Tasa Euro BCV oficial cargada:', euroBcvRate);
+    }
+  } catch (error) {
+    console.warn('No se pudo conectar a la API del BCV, usando tasa de respaldo:', DEFAULT_EURO_BCV_RATE, error);
+    euroBcvRate = DEFAULT_EURO_BCV_RATE;
+  } finally {
+    updateCartDrawerTotals();
+  }
+}
 
 // ==========================================
 // 2. ESTADO GLOBAL DE LA APLICACIÓN
@@ -35,6 +66,7 @@ const AppState = {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   initLocalStorageCart();
+  fetchEuroBcvRate();
   renderCategoriesGrid();
   renderCollectionsGrid();
   renderFilterTabs();
@@ -252,7 +284,33 @@ function renderCartDrawer() {
   });
 
   container.innerHTML = itemsHTML;
-  totalAmountEl.textContent = `${CONFIG.CURRENCY_SYMBOL}${getCartTotal().toFixed(2)}`;
+  updateCartDrawerTotals();
+}
+
+/**
+ * Actualiza los montos totales del carrito y la conversión automática en Bolívares con tasa Euro BCV
+ */
+function updateCartDrawerTotals() {
+  const totalAmountEl = document.getElementById('cart-total-amount');
+  const totalBsEl = document.getElementById('cart-total-bs');
+  const rateLabelEl = document.getElementById('cart-bcv-rate-label');
+
+  const totalUSD = getCartTotal();
+
+  if (totalAmountEl) {
+    totalAmountEl.textContent = `${CONFIG.CURRENCY_SYMBOL}${totalUSD.toFixed(2)}`;
+  }
+
+  const tasaFormatted = euroBcvRate.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  if (totalBsEl) {
+    const totalBs = (totalUSD * euroBcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    totalBsEl.textContent = `≈ Bs. ${totalBs}`;
+  }
+
+  if (rateLabelEl) {
+    rateLabelEl.textContent = `Ref. Tasa Euro BCV del día: Bs. ${tasaFormatted}`;
+  }
 }
 
 // ==========================================
@@ -270,33 +328,47 @@ function finalizeOrderToWhatsApp() {
   const clientName = clientNameInput ? clientNameInput.value.trim() : '';
   const clientCity = clientCityInput ? clientCityInput.value.trim() : '';
 
-  let message = `✨ *¡HOLA, ÁUREA ACCESORIOS!* ✨\n`;
-  message += `Deseo realizar el siguiente pedido desde su tienda online:\n\n`;
+  // 1. Saludo e indicación de compra
+  let message = `¡Hola, Áurea accesorios! ✨\n`;
+  message += `Deseo realizar la compra del siguiente pedido desde su tienda online:\n\n`;
 
   if (clientName) {
     message += `👤 *Cliente:* ${clientName}\n`;
   }
   if (clientCity) {
-    message += `📍 *Ciudad / Estado de Envío:* ${clientCity}\n`;
+    message += `📍 *Destino:* ${clientCity} (Envíos desde Mérida)\n`;
   }
-  message += `📦 *Origen del despacho:* ${CONFIG.SHIPPING_ORIGIN}\n\n`;
+  if (clientName || clientCity) {
+    message += `\n`;
+  }
 
-  message += `🛍️ *DETALLE DE MI PEDIDO:*\n`;
+  // 2. Lista detallada de productos (nombre, cantidad y precio unitario)
+  message += `🛍️ *Lista detallada de productos:*\n`;
   AppState.cart.forEach((item, index) => {
-    const itemTotalStr = item.precio > 0
-      ? `${CONFIG.CURRENCY_SYMBOL}${(item.precio * item.quantity).toFixed(2)}`
+    const unitPriceStr = item.precio > 0
+      ? `$${item.precio.toFixed(2)}`
       : 'Por cotizar';
-    message += `${index + 1}. *[${item.id}] ${item.nombre}* (x${item.quantity}) - ${itemTotalStr}\n`;
+    message += `${index + 1}. *${item.nombre}* | Cantidad: ${item.quantity} | Precio unitario: ${unitPriceStr}\n`;
   });
 
-  const total = getCartTotal();
-  if (total > 0) {
-    message += `\n💰 *TOTAL ESTIMADO:* ${CONFIG.CURRENCY_SYMBOL}${total.toFixed(2)} USD\n\n`;
-  } else {
-    message += `\n💰 *TOTAL:* A convenir según cotización\n\n`;
-  }
-  
-  message += `Por favor, confírmenme la disponibilidad y los métodos de pago (Pago Móvil / Zelle / Efectivo / Transferencia) para concretar el despacho nacional. ¡Muchas gracias! ✨`;
+  const totalUSD = getCartTotal();
+  const totalBs = (totalUSD * euroBcvRate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const tasaBsStr = euroBcvRate.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // 3. Total de la orden
+  message += `\n💰 *Total de la orden:* $${totalUSD.toFixed(2)} USD\n`;
+
+  // 4. Equivalente en Bolívares calculado automáticamente: Total * Tasa_Euro_BCV
+  message += `🇻🇪 *Equivalente en Bolívares:* Bs. ${totalBs}\n`;
+
+  // 5. Línea informativa con la tasa aplicada: Ref. Tasa Euro BCV del día: Bs. [valor_tasa].
+  message += `📊 Ref. Tasa Euro BCV del día: Bs. ${tasaBsStr}\n`;
+
+  // 6. Nota breve: (Monto referencial sujeto a confirmación al momento del pago).
+  message += `⚠️ (Monto referencial sujeto a confirmación al momento del pago)\n\n`;
+
+  // 7. Cierre consultando disponibilidad y métodos de pago (Pago Móvil, Transferencia bancaria, etc.)
+  message += `Por favor, confírmenme la disponibilidad de las piezas y los métodos de pago (Pago Móvil, Transferencia bancaria, etc.) para coordinar el despacho. ¡Muchas gracias! ✨`;
 
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodedMessage}`;
@@ -782,9 +854,11 @@ function setupFloatingWhatsApp() {
   const fab = document.getElementById('whatsapp-fab');
   if (!fab) return;
 
+  const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(CONFIG.DEFAULT_WHATSAPP_MSG)}`;
+  fab.href = url;
+
   fab.addEventListener('click', (e) => {
     e.preventDefault();
-    const url = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(CONFIG.DEFAULT_WHATSAPP_MSG)}`;
     window.open(url, '_blank');
   });
 }
